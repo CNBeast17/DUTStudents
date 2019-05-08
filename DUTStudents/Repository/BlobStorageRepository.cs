@@ -57,9 +57,10 @@ namespace DUTStudents.Repository
             //throw new NotImplementedException();
         }
 
-        public IEnumerable<BlobViewModel> GetBlobs()
+        public IEnumerable<BlobViewModel> GetBlobs(string name)
         {
-            var context = _cloudBlobContainerx.ListBlobs().ToList();
+            var context = _cloudBlobContainerx.ListBlobs(name).ToList();
+         //   var context = _cloudBlobContainerx.ListBlobs().ToList();
             IEnumerable<BlobViewModel> VM = context.Select(x => new BlobViewModel
             {
                 BlobContainerName = x.Container.Name,
@@ -71,7 +72,7 @@ namespace DUTStudents.Repository
             }).ToList();
             return VM;
         }
-
+        
         public bool UploadBlob(HttpPostedFileBase blobfile)
         {
             if (blobfile == null)

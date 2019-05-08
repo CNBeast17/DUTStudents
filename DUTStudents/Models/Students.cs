@@ -14,6 +14,8 @@ namespace DUTStudents.Models
         [Range(20000000, 29999999)]
         [JsonProperty(PropertyName = "StudentNo")]
         public string StudentNo { get; set; }
+        [Display(Name = "Student Image")]
+        public string ImageLink { get; set; }
 
         [Display(Name = "Student Name")]
         [Required(ErrorMessage = "Enter your student name")]

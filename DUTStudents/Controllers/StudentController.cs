@@ -4,13 +4,19 @@ using System.Web.Mvc;
 using DUTStudents.Models;
 using System.Threading.Tasks;
 using System.Net;
-
-
+using DUTStudents.Repository;
+using System.Web;
 
 namespace DUTStudents.Controllers
 {
     public class StudentController : Controller
     {
+        public readonly IBlobStorageRepository repo;
+        public StudentController(IBlobStorageRepository _repo)
+        {
+            this.repo = _repo;
+
+        }
 
 #pragma warning disable 1998
         [ActionName("Create")]
@@ -23,31 +29,19 @@ namespace DUTStudents.Controllers
         [HttpPost]
         [ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync([Bind(Include = "Id,StudentNo,Name,Surname,Email,Tel,Mobile,isActive")] Students student)
+        public async Task<ActionResult> CreateAsync([Bind(Include = "Id,StudentNo,Name,Surname,Email,Tel,Mobile,isActive")] Students student, HttpPostedFileBase UploadFileName)
         {
             if (ModelState.IsValid)
             {
+                repo.UploadBlob(UploadFileName);
+                student.ImageLink = UploadFileName.FileName;
                 await DocumentDBRepository<Students>.CreateItemAsync(student);
-                return RedirectToAction("Search");
+                
+                    return RedirectToAction("Search");
             }
 
             return View(student);
         }
-
-        [HttpPost]
-        [ActionName("Edit")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditAsync([Bind(Include = "Id,StudentNo,Name,Surname,Email,Tel,Mobile,isActive")] Students student)
-        {
-            if (ModelState.IsValid)
-            {
-                await DocumentDBRepository<Students>.UpdateItemAsync(student.Id, student);
-                return RedirectToAction("Search");
-            }
-
-            return View(student);
-        }
-
         [ActionName("Edit")]
         public async Task<ActionResult> EditAsync(string id)
         {
@@ -63,7 +57,21 @@ namespace DUTStudents.Controllers
             }
             return View(student);
         }
+        [HttpPost]
+        [ActionName("Edit")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditAsync([Bind(Include = "Id,StudentNo,Name,Surname,Email,Tel,Mobile,isActive")] Students student, HttpPostedFileBase UploadFileName)
+        {
+            if (ModelState.IsValid)
+            {
+                repo.UploadBlob(UploadFileName);
+                student.ImageLink = UploadFileName.FileName;
+                await DocumentDBRepository<Students>.UpdateItemAsync(student.Id, student);
+                return RedirectToAction("Search");
+            }
 
+            return View(student);
+        }
         [ActionName("Delete")]
         public async Task<ActionResult> DeleteAsync(string id)
         {
@@ -157,6 +165,11 @@ namespace DUTStudents.Controllers
                 return View("Details", student);
             }
             return View("Search");
+        }
+        public ActionResult Index(string name)
+        {
+            var blobVM = repo.GetBlobs(name);
+            return View(blobVM);
         }
 
     }   

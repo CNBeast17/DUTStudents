@@ -223,6 +223,7 @@
     <Content Include="Views\Blob\Index.cshtml" />
     <Content Include="Views\Blob\UploadBlob.cshtml" />
     <Content Include="Views\Student\Email.cshtml" />
+    <Content Include="Views\Student\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

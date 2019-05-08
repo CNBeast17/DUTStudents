@@ -13,7 +13,7 @@ namespace DUTStudents.Repository
     {
         
 
-            IEnumerable<BlobViewModel> GetBlobs();
+            IEnumerable<BlobViewModel> GetBlobs(String name);
             bool DeleteBlob(string file, string fileExtension);
             bool UploadBlob(HttpPostedFileBase blobfile);
 

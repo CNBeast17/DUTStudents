@@ -14,9 +14,9 @@ namespace DUTStudents.Controllers
 
         }
         // GET: Blob
-        public ActionResult Index()
+        public ActionResult Index(string name)
         {
-            var blobVM = repo.GetBlobs();
+            var blobVM = repo.GetBlobs(name);
             return View(blobVM);
         }
         public JsonResult RemoveBlob(string file, string extension)
